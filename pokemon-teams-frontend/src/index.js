@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
 })
 
 let main = document.querySelector("main")
-
+//comment to submit
 
 function getTrainers() {
     return fetch(TRAINERS_URL)
