@@ -10,8 +10,8 @@ function getAllTrainers() {
     .then(json => makeCard(json.data))
 }
 
-function makeCard(trainerArr) {
-    trainerArr.forEach(trainer => {
+function makeCard(trainers) {
+    trainers.forEach(trainer => {
         let cardUl = document.createElement("ul");
 
         let pokemonsArr = trainer.attributes.pokemons;
@@ -29,7 +29,8 @@ function makeCard(trainerArr) {
 
         let cardDiv = document.createElement("div");
         cardDiv.classList.add("card");
-        
+        cardDiv.dataset.id = trainer.id;
+
         let cardPTag = document.createElement("p");
         cardPTag.innerText = trainer.attributes.name;
 
@@ -37,9 +38,30 @@ function makeCard(trainerArr) {
         addPokemonButton.setAttribute("data-trainer-id", trainer.id);
         addPokemonButton.innerText = "Add Pokemon";
         addPokemonButton.classList.add("add-button");
-        addPokemonButton.addEventListener("click", (event) => {
-            console.log(`i am being clicked ${event}`);
+        addPokemonButton.addEventListener("click", event => {
+            console.log(event.path[0].dataset.trainerId);
+            fetch(POKEMONS_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "Application/json"
+            },
+            body: JSON.stringify({
+                trainer_id: event.path[0].dataset.trainerId
+            })
         })
+        .then(response => response.json())
+        .then(pokemon => {
+            let li = document.createElement("li");
+            let releaseButton = document.createElement("button");
+            releaseButton.innerText = "Release";
+            releaseButton.classList.add("release");
+            releaseButton.setAttribute("data-pokemon-id", pokemon.data.id);
+            li.innerText = `${pokemon.data.attributes.nickname} (${pokemon.data.attributes.species})`;
+            li.appendChild(releaseButton);
+            cardUl.appendChild(li);
+        })
+    });
 
 
         cardDiv.appendChild(cardPTag);
@@ -49,13 +71,23 @@ function makeCard(trainerArr) {
     })
 }
 
-function addPokemonButtons() {
-    let addBtns = document.getElementsByClassName("add-button");
-}
+// function addPokemonButtons(event) {
+//     console.log(event);
+//     fetch(POKEMONS_URL, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Accept": "Application/json"
+//         },
+//         body: JSON.stringify({
+
+//         })
+//     })
+// }
+
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
     getAllTrainers();
-    addPokemonButtons();
 })
