@@ -8,10 +8,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
   .then(response=>response.json())
   .then(data=>{
     data.data.forEach((trainer) => createTrainerCard(trainer.attributes));
-    data.included.forEach((pokemon) => {
-      addPokemon(pokemon.attributes);
-    });
-    console.log(data)
+    data.included.forEach((pokemon) =>  addPokemon(pokemon.attributes));
     });
 });
 
