@@ -10,16 +10,20 @@ window.addEventListener('DOMContentLoaded', (event) => {
     data.data.forEach((trainer) => createTrainerCard(trainer.attributes));
     data.included.forEach((pokemon) =>  addPokemon(pokemon.attributes));
     });
-    document.querySelectorAll('.card').forEach((card) => {
-      if (card.getElementsByClassName('ul').length > 5) {
-        card.getElementsByClassName('add').disabled = true
-      }
-    });
     document.addEventListener('click',function (event) {
-      if (event.target.getAttribute('data-trainer-id')) {
-        clickAdd(event.target.getAttribute('data-trainer-id'));
+      let trainerId=event.target.getAttribute('data-trainer-id')
+      if (trainerId) {
+        const trainerCard=document.querySelector(`[data-id='${trainerId}']`);
+        if (trainerCard.querySelectorAll('li').length < 6) {
+          clickAdd(trainerId)
+        }
       }
     })
+    document.querySelectorAll('.card').forEach((card) => {
+      if (card.querySelectorAll('li').length > 5) {
+        card.querySelector('.add').disabled = true
+      }
+    });
 });
 
 function createTrainerCard(trainer) {
@@ -33,7 +37,6 @@ function createTrainerCard(trainer) {
   addButton.setAttribute('data-trainer-id',trainer.id)
   addButton.innerText='Add Pokemon'
   const team=document.createElement('ul')
-
   card.appendChild(name)
   card.appendChild(addButton)
   card.appendChild(team)
