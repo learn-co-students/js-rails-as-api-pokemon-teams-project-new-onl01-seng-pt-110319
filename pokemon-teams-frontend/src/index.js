@@ -10,6 +10,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
     data.data.forEach((trainer) => createTrainerCard(trainer.attributes));
     data.included.forEach((pokemon) =>  addPokemon(pokemon.attributes));
     });
+    document.querySelectorAll('.card').forEach((card) => {
+      if (card.getElementsByClassName('ul').length > 5) {
+        card.getElementsByClassName('add').disabled = true
+      }
+    });
+    document.addEventListener('click',function (event) {
+      if (event.target.getAttribute('data-trainer-id')) {
+        clickAdd(event.target.getAttribute('data-trainer-id'));
+      }
+    })
 });
 
 function createTrainerCard(trainer) {
@@ -19,6 +29,7 @@ function createTrainerCard(trainer) {
   const name=document.createElement('p')
   name.innerText=trainer.name
   const addButton = document.createElement('button')
+  addButton.className='add'
   addButton.setAttribute('data-trainer-id',trainer.id)
   addButton.innerText='Add Pokemon'
   const team=document.createElement('ul')
@@ -42,3 +53,17 @@ function addPokemon(pokemon) {
   const team=trainerCard.querySelector('ul')
   team.appendChild(teamMember)
 }
+
+function clickAdd(trainer_id) {
+  data = {trainer_id: trainer_id}
+  fetch(POKEMONS_URL, {
+    method: 'post',
+    headers: {
+      'Content-Type':'application/json',
+      'Accept':'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response=>response.json())
+  .then(pokemon=>addPokemon(pokemon))
+};
