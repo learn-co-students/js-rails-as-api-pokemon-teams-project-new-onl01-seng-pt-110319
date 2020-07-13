@@ -7,4 +7,9 @@ class PokemonsController < ApplicationController
     )
     render json: pokemon
   end
+
+  def destroy
+    pokemon = Pokemon.find(params[:id])
+    pokemon.destroy
+  end
 end

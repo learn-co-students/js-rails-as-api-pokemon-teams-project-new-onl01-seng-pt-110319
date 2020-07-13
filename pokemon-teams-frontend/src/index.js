@@ -12,18 +12,18 @@ window.addEventListener('DOMContentLoaded', (event) => {
     });
     document.addEventListener('click',function (event) {
       let trainerId=event.target.getAttribute('data-trainer-id')
+      let pokemonID=event.target.getAttribute('data-pokemon-id')
       if (trainerId) {
         const trainerCard=document.querySelector(`[data-id='${trainerId}']`);
         if (trainerCard.querySelectorAll('li').length < 6) {
           clickAdd(trainerId)
         }
+      } else {
+        if (pokemonID) {
+          deletePokemon(pokemonID);
+        }
       }
     })
-    document.querySelectorAll('.card').forEach((card) => {
-      if (card.querySelectorAll('li').length > 5) {
-        card.querySelector('.add').disabled = true
-      }
-    });
 });
 
 function createTrainerCard(trainer) {
@@ -69,4 +69,19 @@ function clickAdd(trainer_id) {
   })
   .then(response=>response.json())
   .then(pokemon=>addPokemon(pokemon))
+};
+
+function deletePokemon(pokemonId) {
+  const pokemon=document.querySelector(`[data-pokemon-id='${pokemonId}']`).parentElement;
+  const team=pokemon.parentElement;
+  team.removeChild(pokemon)
+  data = {id: pokemonId}
+  fetch (`${POKEMONS_URL}/${pokemonId}`,{
+    method: 'delete',
+    headers: {
+      'Content-Type':'application/json',
+      'Accept':'application/json'
+    },
+    body: JSON.stringify(data)
+  })
 };
